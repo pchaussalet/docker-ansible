@@ -9,7 +9,7 @@ Installation
 1. Install [Docker](http://www.docker.io/gettingstarted/)
 2. Install [docker-py](https://github.com/dotcloud/docker-py) on the docker server, and/or the host you will be running
    ansible playbooks from if you would like to use the docker remote API instead of ansible's SSH session. In order
-   to use docker remote API, you will need to run the docker module actions with ansible's `local_action` and set 
+   to use the docker remote API, you will need to use `local_action` in your playbooks instead of `action` and set 
    the `docker_url` argument to `http://${inventory_hostname}`.
 2. Copy `docker-ansible.py` to your ansible module directory as `docker` (e.g. `/usr/local/share/ansbile/docker`)
 
