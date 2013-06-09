@@ -56,12 +56,8 @@ Stop all of the running tomcat containers:
 
 Idempotence
 ===========
-The module will try to determine if the containers are already running, need to be started or stopped etc. This is 
-currently accomplished by comparing the image name and command to the currently running containers to determine if t
-hey are the same containers previously started. 
+The module will try to determine which containers it has already started on subsequent runs of the playbook.
 
-At some point Docker may support tagging of running containers which will make this more robust. Currently the only
-other option would be to track the instances IDs of the started containers in Ansible, which doesn't seem like the
-Ansible way of doing things.
+
 
 
