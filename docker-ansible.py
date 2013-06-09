@@ -227,7 +227,7 @@ def main():
             env             = dict(),
             dns             = dict(),
             detach          = dict(default=True),
-            state           = dict(default='present', choices=['absent', 'present', 'kill', 'restart']),
+            state           = dict(default='present', choices=['absent', 'present', 'stop', 'kill', 'restart']),
             debug           = dict(default=False)
         )
     )
@@ -271,7 +271,7 @@ def main():
     # determine which images/commands are running already
     for each in docker_client.containers():
         if each["Image"].split(":")[0] == image.split(":")[0] and each["Command"].strip() == command.strip():
-            details = docker_client.inspect_container(each["Id"])
+            details = docker_client.inspect_container(each['Id'])
             running_containers.append(details)
             running_count = running_count + 1
 
@@ -309,9 +309,10 @@ def main():
             docker_client.start(*[i['Id'] for i in containers])
             details = [docker_client.inspect_container(i['Id']) for i in containers]
             for each in details:
+                running_containers.append(details)
+                container_summary.append(details)
                 if each["State"]["Running"] == True:
                     started = started + 1
-                    running_containers.append(details)
 
         # stop containers if we have too many
         elif delta < 0:
@@ -325,14 +326,15 @@ def main():
 
             details = [docker_client.inspect_container(i['Id']) for i in running_containers[0:abs(delta)]]
             for each in details:
+                running_containers = [i for i in running_containers if i['Id'] != each['Id']]
                 if each["State"]["Running"] == False:
                     stopped = stopped + 1
-                    container_summary.append(details)
-            docker_client.remove_container(*[i["Id"] for i in details])
-      
-    # stop containers
+            docker_client.remove_container(*[i['Id'] for i in details])
+            container_summary = running_containers
+
+    # stop and remove containers
     elif state == "absent":
-        docker_client.stop(*[i["Id"] for i in running_containers])
+        docker_client.stop(*[i['Id'] for i in running_containers])
         changed = True
 
         try:
@@ -342,14 +344,30 @@ def main():
 
         details = [docker_client.inspect_container(i['Id']) for i in running_containers[0:delta]]
         for each in details:
+            container_summary.append(details)
             if each["State"]["Running"] == False:
                 stopped = stopped + 1
-                container_summary.append(details)
-        docker_client.remove_container(*[i["Id"] for i in details])
+        docker_client.remove_container(*[i['Id'] for i in details])
+
+    # stop containers
+    elif state == "stop":
+        docker_client.stop(*[i['Id'] for i in running_containers])
+        changed = True
+
+        try:
+            docker_client.wait(*[i['Id'] for i in running_containers])
+        except ValueError:
+            pass
+
+        details = [docker_client.inspect_container(i['Id']) for i in running_containers[0:delta]]
+        for each in details:
+            container_summary.append(details)
+            if each["State"]["Running"] == False:
+                stopped = stopped + 1
 
     # kill containers    
     elif state == "kill":
-        docker_client.kill(*[i["Id"] for i in running_containers])
+        docker_client.kill(*[i['Id'] for i in running_containers])
         changed = True
 
         try:
@@ -359,28 +377,24 @@ def main():
 
         details = [docker_client.inspect_container(i['Id']) for i in running_containers[0:delta]]
         for each in details:
+            container_summary.append(details)
             if each["State"]["Running"] == False:
-                stopped = stopped + 1
-                container_summary.append(details)
-        docker_client.remove_container(*[i["Id"] for i in details])
+                killed = killed + 1
+        docker_client.remove_container(*[i['Id'] for i in details])
 
     # restart containers    
     elif state == "restart":
-        docker_client.restart(*[i["Id"] for i in running_containers])
+        docker_client.restart(*[i['Id'] for i in running_containers])
         changed = True
-
-        try:
-            docker_client.wait(*[i['Id'] for i in running_containers])
-        except ValueError:
-            pass
 
         details = [docker_client.inspect_container(i['Id']) for i in running_containers[0:delta]]
         for each in details:
+            container_summary.append(details)
             if each["State"]["Running"] == True:
-                stopped = stopped + 1
-                container_summary.append(details)
+                restarted = restarted + 1
 
-        msg = "Started %d, stopped %d, killed %d, restarted %d, container(s) running image %s with command %s" % (started, stopped, killed, restarted, image, command)
+        msg = "Started %d, stopped %d, killed %d, restarted %d container(s) running image %s with command %s" %\
+                (started, stopped, killed, restarted, image, command)
 
     module.exit_json(failed=failed, changed=changed, msg=msg, ansible_facts=_ansible_facts(container_summary))
 
