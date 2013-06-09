@@ -310,7 +310,6 @@ def main():
             details = [docker_client.inspect_container(i['Id']) for i in containers]
             for each in details:
                 running_containers.append(details)
-                container_summary.append(details)
                 if each["State"]["Running"] == True:
                     started = started + 1
 
@@ -330,7 +329,8 @@ def main():
                 if each["State"]["Running"] == False:
                     stopped = stopped + 1
             docker_client.remove_container(*[i['Id'] for i in details])
-            container_summary = running_containers
+        
+        container_summary = running_containers
 
     # stop and remove containers
     elif state == "absent":
@@ -393,8 +393,8 @@ def main():
             if each["State"]["Running"] == True:
                 restarted = restarted + 1
 
-        msg = "Started %d, stopped %d, killed %d, restarted %d container(s) running image %s with command %s" %\
-                (started, stopped, killed, restarted, image, command)
+    msg = "Started %d, stopped %d, killed %d, restarted %d container(s) running image %s with command %s" %\
+            (started, stopped, killed, restarted, image, command)
 
     module.exit_json(failed=failed, changed=changed, msg=msg, ansible_facts=_ansible_facts(container_summary))
 
