@@ -5,7 +5,10 @@ This module allows you to use [Ansible](http://ansible.cc) to provision and de-p
 
 Installation
 ============
-TBD
+
+1. Install [Docker](http://www.docker.io/gettingstarted/)
+2. Install [docker-py](https://github.com/dotcloud/docker-py)
+2. Copy `docker-ansible.py` to your ansible module directory as `docker` (e.g. `/usr/local/share/ansbile/docker`)
 
 Usage Examples
 ==============

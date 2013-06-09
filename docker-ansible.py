@@ -215,7 +215,7 @@ def main():
             count           = dict(default=1),
             image           = dict(required=True),
             command         = dict(required=True),
-            ports           = dict(),
+            ports           = dict(required=True),
             volumes         = dict(default={}),
             volumes_from    = dict(default=str("")),
             memory_limit    = dict(default=_human_to_bytes("256MB")),

@@ -1,0 +1,25 @@
+---
+- name: test docker ansbile
+  hosts: test_group
+  user: root
+  tasks:
+  - name: run 2 servers
+    action: docker-ansible.py image=busybox command="sleep 30" ports=8080 count=2
+  - name: run 3 servers
+    action: docker-ansible.py image=busybox command="sleep 30" ports=8080 count=3
+  - name: run 1 servers
+    action: docker-ansible.py image=busybox command="sleep 30" ports=8080 count=1
+  - name: Display IP address and port mappings for containers
+    action: shell echo Mapped to ${inventory_hostname}:${item.NetworkSettings.PortMapping.8080}
+    with_items: $DockerContainers
+  - name: Display IP address and port mappings for containers with indexes
+    local_action: shell echo Mapped to ${inventory_hostname}:${DockerContainers[${item}].NetworkSettings.PortMapping.8080}
+    with_sequence: start=0 end=4
+  - name: restart servers
+    action: docker-ansible.py image=busybox command="sleep 30" ports=8080 state=restart
+  - name: stop servers
+    action: docker-ansible.py image=busybox command="sleep 30" ports=8080 state=stop
+  - name: start servers
+    action: docker-ansible.py image=busybox command="sleep 30" ports=8080 state=present count=1
+  - name: kill servers
+    action: docker-ansible.py image=busybox command="sleep 30" ports=8080 state=kill
