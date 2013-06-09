@@ -28,11 +28,11 @@ module: docker
 short_description: manage docker containers
 description:
      - manage the life cycle of docker containers. This module has a dependency on the docker-py python module.
-version_added: "0.1"
+version_added: "0.2"
 options:
   count:
     description:
-      - number of containers to launch on this host
+      - target number of containers on this host
     required: False
     default: 1
     aliases: []
@@ -51,7 +51,7 @@ options:
   ports:
     description:
       - private to public port mapping specification (see PortSpecs in the Docker manual)
-    required: false
+    required: true
     default: null
     aliases: []
   volumes:
@@ -126,7 +126,7 @@ options:
       - Set the state of the container
     required: false
     default: present
-    choices: [ "present", "absent", "kill", "restart" ]
+    choices: [ "present", "stop", "absent", "kill", "restart" ]
     aliases: []
 author: Cove Schneider
 '''
