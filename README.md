@@ -1,14 +1,15 @@
 Ansible Module for Docker
 =========================
 
-This module allows you to use [Ansible](http://ansible.cc) to provision and de-provision Linux containers using the [docker](http://docker.io) container engine. 
+This module allows you to use [Ansible](http://ansible.cc) to provision and de-provision Linux containers using the
+[docker](http://docker.io) container engine. 
 
 Installation
 ============
 
 1. Install [docker](http://www.docker.io/gettingstarted/)
-2. Install [docker-py](https://github.com/dotcloud/docker-py) on the docker server, and/or on the host you will be running
-   ansible playbooks from if you would like to use the docker remote API instead of ansible's SSH session. 
+2. Install [docker-py](https://github.com/dotcloud/docker-py) on the docker server, and/or on the host you will be
+   running ansible playbooks from if you would like to use the docker remote API instead of ansible's SSH session. 
 
    <pre>
    git clone https://github.com/dotcloud/docker-py.git
@@ -25,11 +26,17 @@ Installation
    sudo mv docker /usr/local/share/ansible
    </pre>
 
+Demo
+====
+
+[http://ascii.io/a/3348](http://ascii.io/a/3348)
+
 Usage Examples
 ==============
 The module will try to determine which containers it has already started on subsequent runs of the playbook.
 
-Start one docker container running tomcat in each host of the web group and bind tomcat's listening port to 8080 on the host:
+Start one docker container running tomcat in each host of the web group and bind tomcat's listening port to 8080
+on the host:
 
 	- name: start tomcat
 	  hosts: web
@@ -38,7 +45,8 @@ Start one docker container running tomcat in each host of the web group and bind
 	  - name: run tomcat servers
 	    action: docker image=cove/tomcat7 command=/start-tomcat.sh ports=:8080
 
-The tomcat server's port is NAT'ed to a dynamic port on the host, but you can determine which port the server was mapped to using $DockerContainers:
+The tomcat server's port is NAT'ed to a dynamic port on the host, but you can determine which port the server was
+mapped to using $DockerContainers:
 
 	- name: start tomcat 
 	  hosts: web
@@ -73,5 +81,128 @@ Stop all of the running tomcat containers:
 	  - name: run tomcat servers
 	    action: docker image=cove/tomcat7 command=/start-tomcat.sh state=absent
 
+Parameters
+==========
 
+<table>
+<tr>
+<th class="head">parameter</th>
+<th class="head">required</th>
+<th class="head">default</th>
+<th class="head">choices</th>
+<th class="head">comments</th>
+</tr>
+<tr>
+<td>username</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>username</td>
+</tr>
+<tr>
+<td>memory_limit</td>
+<td>no</td>
+<td>256MB</td>
+<td><ul></ul></td>
+<td>RAM allocated to container</td>
+</tr>
+<tr>
+<td>env</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>Set environment variables</td>
+</tr>
+<tr>
+<td>image</td>
+<td>yes</td>
+<td></td>
+<td><ul></ul></td>
+<td>image to use for this operation</td>
+</tr>
+<tr>
+<td>volumes</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>volume(s) to mount on the container</td>
+</tr>
+<tr>
+<td>detach</td>
+<td>no</td>
+<td>True</td>
+<td><ul></ul></td>
+<td>Enable detached mode on start up, leaves container running in background</td>
+</tr>
+<tr>
+<td>memory_swap</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>Virtual memory swap space allocated to container</td>
+</tr>
+<tr>
+<td>count</td>
+<td>no</td>
+<td>1</td>
+<td><ul></ul></td>
+<td>number of containers to run</td>
+</tr>
+<tr>
+<td>password</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>password</td>
+</tr>
+<tr>
+<td>hostname</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>Container hostname</td>
+</tr>
+<tr>
+<td>docker_url</td>
+<td>no</td>
+<td>http://127.0.0.1:4243</td>
+<td><ul></ul></td>
+<td>URL of docker daemon to issue commands to</td>
+</tr>
+<tr>
+<td>state</td>
+<td>no</td>
+<td>present</td>
+<td><ul><li>present</li><li>stop</li><li>absent</li><li>kill</li><li>restart</li></ul></td>
+<td>Set the state of the container</td>
+</tr>
+<tr>
+<td>command</td>
+<td>yes</td>
+<td></td>
+<td><ul></ul></td>
+<td>command to run in a container</td>
+</tr>
+<tr>
+<td>dns</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>Set custom DNS servers for the container</td>
+</tr>
+<tr>
+<td>volumes_from</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>shared volume(s) from another container</td>
+</tr>
+<tr>
+<td>ports</td>
+<td>yes</td>
+<td></td>
+<td><ul></ul></td>
+<td>private to public port mapping specification (see PortSpecs in the Docker manual)</td>
+</tr>
+</table>
 
