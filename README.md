@@ -12,7 +12,8 @@ Installation
 
    <pre>
    git clone https://github.com/dotcloud/docker-py.git
-   sudo python docker-py/setup.py install 
+   cd docker-py
+   sudo python setup.py install 
    </pre>
 
    NB: In order to use the docker remote API  you will need to use `local_action` in your playbooks and set
