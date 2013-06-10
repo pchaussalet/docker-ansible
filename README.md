@@ -6,12 +6,24 @@ This module allows you to use [Ansible](http://ansible.cc) to provision and de-p
 Installation
 ============
 
-1. Install [Docker](http://www.docker.io/gettingstarted/)
-2. Install [docker-py](https://github.com/dotcloud/docker-py) on the docker server, and/or the host you will be running
-   ansible playbooks from if you would like to use the docker remote API instead of ansible's SSH session. In order
-   to use the docker remote API, you will need to use `local_action` in your playbooks instead of `action` and set 
+1. Install [docker](http://www.docker.io/gettingstarted/)
+2. Install [docker-py](https://github.com/dotcloud/docker-py) on the docker server, and/or on the host you will be running
+   ansible playbooks from if you would like to use the docker remote API instead of ansible's SSH session. 
+
+   <pre>
+   git clone https://github.com/dotcloud/docker-py.git
+   sudo python docker-py/setup.py install 
+   </pre>
+
+   NB: In order to use the docker remote API  you will need to use `local_action` in your playbooks and set
    the `docker_url` argument to `http://${inventory_hostname}`.
+
 2. Copy `docker-ansible.py` to your ansible module directory as `docker` (e.g. `/usr/local/share/ansbile/docker`)
+
+   <pre>
+   curl https://raw.github.com/cove/docker-ansible/master/docker-ansible.py > docker
+   sudo mv docker /usr/local/share/ansible
+   </pre>
 
 Usage Examples
 ==============
