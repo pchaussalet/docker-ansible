@@ -84,7 +84,6 @@ Stop all of the running tomcat containers:
 
 Parameters
 ==========
-
 <table>
 <tr>
 <th class="head">parameter</th>
@@ -98,14 +97,14 @@ Parameters
 <td>no</td>
 <td></td>
 <td><ul></ul></td>
-<td>username</td>
+<td>Set remote API username</td>
 </tr>
 <tr>
 <td>memory_limit</td>
 <td>no</td>
 <td>256MB</td>
 <td><ul></ul></td>
-<td>RAM allocated to container</td>
+<td>Set RAM allocated to container</td>
 </tr>
 <tr>
 <td>env</td>
@@ -119,14 +118,14 @@ Parameters
 <td>yes</td>
 <td></td>
 <td><ul></ul></td>
-<td>image to use for this operation</td>
+<td>Set container image to use</td>
 </tr>
 <tr>
 <td>volumes</td>
 <td>no</td>
 <td></td>
 <td><ul></ul></td>
-<td>volume(s) to mount on the container</td>
+<td>Set volume(s) to mount on the container</td>
 </tr>
 <tr>
 <td>detach</td>
@@ -140,35 +139,35 @@ Parameters
 <td>no</td>
 <td></td>
 <td><ul></ul></td>
-<td>Virtual memory swap space allocated to container</td>
+<td>Set virtual memory swap space allocated to container</td>
 </tr>
 <tr>
 <td>count</td>
 <td>no</td>
 <td>1</td>
 <td><ul></ul></td>
-<td>number of containers to run</td>
+<td>Set number of containers to run</td>
 </tr>
 <tr>
 <td>password</td>
 <td>no</td>
 <td></td>
 <td><ul></ul></td>
-<td>password</td>
+<td>Set remote API password</td>
 </tr>
 <tr>
 <td>hostname</td>
 <td>no</td>
 <td></td>
 <td><ul></ul></td>
-<td>Container hostname</td>
+<td>Set container hostname</td>
 </tr>
 <tr>
 <td>docker_url</td>
 <td>no</td>
 <td>http://127.0.0.1:4243</td>
 <td><ul></ul></td>
-<td>URL of docker daemon to issue commands to</td>
+<td>URL of docker host to issue commands to</td>
 </tr>
 <tr>
 <td>state</td>
@@ -182,7 +181,7 @@ Parameters
 <td>yes</td>
 <td></td>
 <td><ul></ul></td>
-<td>command to run in a container</td>
+<td>Set command to run in a container on startup</td>
 </tr>
 <tr>
 <td>dns</td>
@@ -196,14 +195,13 @@ Parameters
 <td>no</td>
 <td></td>
 <td><ul></ul></td>
-<td>shared volume(s) from another container</td>
+<td>Set shared volume(s) from another container</td>
 </tr>
 <tr>
 <td>ports</td>
 <td>yes</td>
 <td></td>
 <td><ul></ul></td>
-<td>private to public port mapping specification (see PortSpecs in the Docker manual)</td>
+<td>Set private to public port mapping specification (e.g. ports=22,80 or ports=:8080 maps 8080 directly to host)</td>
 </tr>
 </table>
-

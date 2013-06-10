@@ -27,79 +27,78 @@ DOCUMENTATION = '''
 module: docker
 short_description: manage docker containers
 description:
-     - manage the life cycle of docker containers. This module has a dependency on the docker-py python module.
-version_added: "0.2"
+     - Manage the life cycle of docker containers. This module has a dependency on the docker-py python module.
 options:
   count:
     description:
-      - target number of containers on this host
+      - Set number of containers to run
     required: False
     default: 1
     aliases: []
   image:
     description:
-       - image to use for this operation
+       - Set container image to use
     required: true
     default: null
     aliases: []
   command:
     description:
-       - command to run, or validate is running, in a container
+       - Set command to run in a container on startup
     required: true
     default: null
     aliases: []
   ports:
     description:
-      - private to public port mapping specification (see PortSpecs in the Docker manual)
+      - Set private to public port mapping specification (e.g. ports=22,80 or ports=:8080 maps 8080 directly to host)
     required: true
     default: null
     aliases: []
   volumes:
     description:
-      - volume(s) to mount on the container
+      - Set volume(s) to mount on the container
     required: false
     default: null
     aliases: []
   volumes_from:
     description:
-      - shared volume(s) from another container
+      - Set shared volume(s) from another container
     required: false
     default: null
     aliases: []
   memory_limit:
     description:
-      - RAM allocated to container
+      - Set RAM allocated to container
     required: false
     default: null
     aliases: []
     default: 256MB
   memory_swap:
     description:
-      - Virtual memory swap space allocated to container
+      - Set virtual memory swap space allocated to container
     required: false
     default: 0
     aliases: []
   docker_url:
     description:
-      - URL of docker deamon to issue commands to
+      - URL of docker host to issue commands to
     required: false
     default: http://127.0.0.1:4243
     aliases: []
   username:
     description:
-      - username
+      - Set remote API username
     required: false
     default: null
     aliases: []
   password:
     description:
-      - password
+      - Set remote API password
     required: false
     default: null
     aliases: []
   hostname:
     description:
-      - Container hostname
+      - Set container hostname
     required: false
     default: null
     aliases: []
@@ -129,55 +128,6 @@ options:
     choices: [ "present", "stop", "absent", "kill", "restart" ]
     aliases: []
 author: Cove Schneider
-'''
-
-EXAMPLES = '''
-# Basic provisioning example, will start a container on each docker host in the group
-# and out put hello world.
-action:
-    module: docker 
-    image: base
-    command: while [ 1 ]; do /bin/echo hello world; sleep 1; done
-
-# Provisions a custom container running tomcat on each host in the group, mapping port 8080
-# from the container directly to the docker host (i.e. with out NAT'ing the port). 
-action: 
-    module: docker 
-    memory_limit: 1G
-    image: cove/tomcat7
-    command: service start tomcat7
-    ports: :8080
-
-# Stops all containers running tomcat from the previous example.
-action: 
-    module: docker
-    state: absent
-    image: cove/tomcat7
-    command: service start tomcat7
-
-# Start 5 containers on each docker host using the docker remote API only.
-local_action:
-    module: docker
-    image: cove/tomcat7
-    command: service start tomcat7
-    docker_url: http://$inventory_hostname:4342
-    count: 5
-
-# To access docker container details in a subsequent tasks, such as which port 8080 was mapped to:
-action:
-    module: shell
-    command: echo Mapped port 8080 to ${DockerContainers[0].NetworkSettings.PortMapping.8080}
-
-# Sample playbook
-- name: ansible + docker playbook
-  hosts: web
-  user: root
-  tasks:
-  - name: run tomcat servers
-    action: docker image=cove/tomcat7 command=/start-tomcat.sh ports=8080 count=5
-  - name: echo ports
-    action: shell echo Mapped to ${inventory_hostname}:${item.NetworkSettings.PortMapping.8080} >> /tmp/file.out
-    with_items: $DockerContainers 
 '''
 
 try:
