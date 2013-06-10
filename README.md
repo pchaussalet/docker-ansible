@@ -15,6 +15,7 @@ Installation
 
 Usage Examples
 ==============
+The module will try to determine which containers it has already started on subsequent runs of the playbook.
 
 Start one docker container running tomcat in each host of the web group and bind tomcat's listening port to 8080 on the host:
 
@@ -59,11 +60,6 @@ Stop all of the running tomcat containers:
 	  tasks:
 	  - name: run tomcat servers
 	    action: docker image=cove/tomcat7 command=/start-tomcat.sh state=absent
-
-Idempotence
-===========
-The module will try to determine which containers it has already started on subsequent runs of the playbook.
-
 
 
 
