@@ -280,9 +280,8 @@ def main():
             details = [docker_client.inspect_container(i['Id']) for i in running_containers[0:abs(delta)]]
             for each in details:
                 # XXX some quirk upstream
-                if 'ID' in details:
-                    details['Id'] = details['ID']
-                    details['ID'] = None
+                if 'ID' in each:
+                    each['Id'] = each['ID']
                 running_containers = [i for i in running_containers if i['Id'] != each['Id']]
                 if each["State"]["Running"] == False:
                     stopped = stopped + 1
@@ -302,6 +301,7 @@ def main():
 
         details = [docker_client.inspect_container(i['Id']) for i in running_containers[0:delta]]
         for each in details:
+            # XXX some quirk upstream
             if 'ID' in each:
                 each['Id'] = each['ID']
             container_summary.append(details)
@@ -324,7 +324,6 @@ def main():
             # XXX some quirk upstream
             if 'ID' in details:
                 details['Id'] = details['ID']
-                details['ID'] = None
             container_summary.append(details)
             if each["State"]["Running"] == False:
                 stopped = stopped + 1
