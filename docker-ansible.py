@@ -222,6 +222,10 @@ def main():
     for each in docker_client.containers():
         if each["Image"].split(":")[0] == image.split(":")[0] and each["Command"].strip() == command.strip():
             details = docker_client.inspect_container(each['Id'])
+            # XXX some quirk upstream
+            if 'ID' in details:
+                details['Id'] = details['ID']
+                details['ID'] = None
             running_containers.append(details)
             running_count = running_count + 1
 
@@ -234,8 +238,8 @@ def main():
     # start/stop images
     if state == "present":
         params = {'image':        image,
-                  'command':      [command],
-                  'ports':        ports.split(','),
+                  'command':      command,
+                  'ports':        ports,
                   'volumes':      volumes,
                   'volumes_from': volumes_from,
                   'mem_limit':    memory_limit,
@@ -275,6 +279,10 @@ def main():
 
             details = [docker_client.inspect_container(i['Id']) for i in running_containers[0:abs(delta)]]
             for each in details:
+                # XXX some quirk upstream
+                if 'ID' in details:
+                    details['Id'] = details['ID']
+                    details['ID'] = None
                 running_containers = [i for i in running_containers if i['Id'] != each['Id']]
                 if each["State"]["Running"] == False:
                     stopped = stopped + 1
@@ -294,6 +302,8 @@ def main():
 
         details = [docker_client.inspect_container(i['Id']) for i in running_containers[0:delta]]
         for each in details:
+            if 'ID' in each:
+                each['Id'] = each['ID']
             container_summary.append(details)
             if each["State"]["Running"] == False:
                 stopped = stopped + 1
@@ -311,6 +321,10 @@ def main():
 
         details = [docker_client.inspect_container(i['Id']) for i in running_containers[0:delta]]
         for each in details:
+            # XXX some quirk upstream
+            if 'ID' in details:
+                details['Id'] = details['ID']
+                details['ID'] = None
             container_summary.append(details)
             if each["State"]["Running"] == False:
                 stopped = stopped + 1
@@ -334,7 +348,7 @@ def main():
 
     # restart containers    
     elif state == "restart":
-        docker_client.restart(*[i['Id'] for i in running_containers])
+        docker_client.restart(*[i['ID'] for i in running_containers])
         changed = True
 
         details = [docker_client.inspect_container(i['Id']) for i in running_containers[0:delta]]

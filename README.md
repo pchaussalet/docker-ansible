@@ -73,7 +73,7 @@ Just as in the previous example, but iterates through the list of docker contain
 	    local_action: shell echo Mapped to ${inventory_hostname}:${DockerContainers[${item}].NetworkSettings.PortMapping.8080}
 	    with_sequence: start=0 end=$start_containers_count
 
-Stop all of the running tomcat containers:
+Stop and remove all of the running tomcat containers:
 
 	- name: stop tomcat
 	  hosts: web
