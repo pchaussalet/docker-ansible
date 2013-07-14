@@ -215,7 +215,7 @@ def main():
 
     # don't support older versions
     docker_info = docker_client.info()
-    if docker_info['Version'] < "0.3.3":
+    if 'Version' in docker_info and docker_info['Version'] < "0.3.3":
         module.fail_json(changed=changed, msg="Minimum Docker version required is 0.3.3")
  
     # determine which images/commands are running already
@@ -234,8 +234,8 @@ def main():
     # start/stop images
     if state == "present":
         params = {'image':        image,
-                  'command':      command,
-                  'ports':        ports,
+                  'command':      [command],
+                  'ports':        ports.split(','),
                   'volumes':      volumes,
                   'volumes_from': volumes_from,
                   'mem_limit':    memory_limit,
