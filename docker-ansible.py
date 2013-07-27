@@ -184,7 +184,7 @@ def main():
     count        = int(module.params.get('count'))
     image        = module.params.get('image')
     command      = module.params.get('command')
-    ports        = module.params.get('ports')
+    ports        = module.params.get('ports').split(",")
     volumes      = module.params.get('volumes')
     volumes_from = module.params.get('volumes_from')
     memory_limit = _human_to_bytes(module.params.get('memory_limit'))
