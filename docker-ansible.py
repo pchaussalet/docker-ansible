@@ -235,6 +235,22 @@ def main():
     stopped   = 0
     killed    = 0
 
+    environment = {}
+    if env:
+        for env_var in env.split(','):
+            key, value = env_var.split('=')
+            environment[key] = value
+
+    
+    binds = {}
+    if volumes:
+        for volume in volumes.split(','):
+            host, dest = volume.split(':')[:2]
+            binds[host] = dest
+    volumes = {}
+    for dest in binds.values():
+        volumes[dest] = {}
+
     # start/stop images
     if state == "present":
         params = {'image':        image,
@@ -243,7 +259,7 @@ def main():
                   'volumes':      volumes,
                   'volumes_from': volumes_from,
                   'mem_limit':    memory_limit,
-                  'environment':  env,
+                  'environment':  environment,
                   'dns':          dns,
                   'hostname':     hostname,
                   'detach':       detach,}
@@ -260,7 +276,8 @@ def main():
                 changed = True
                 containers = [docker_client.create_container(**params) for _ in range(delta)]
     
-            docker_client.start(*[i['Id'] for i in containers])
+            for container in containers:
+                docker_client.start(container, binds or None)
             details = [docker_client.inspect_container(i['Id']) for i in containers]
             for each in details:
                 running_containers.append(details)
